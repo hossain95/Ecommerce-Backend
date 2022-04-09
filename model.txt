@@ -1,0 +1,19 @@
+userModel::
+firstName
+lastName
+email
+contact
+password
+verificationCode
+enabled
+userStatus (seller or userModel)
+
+seller::
+firstName
+lastName
+email
+contact
+password
+verificationCode
+enabled
+userStatus (seller or userModel)
