@@ -5,11 +5,13 @@ import com.example.ecommercebackend.model.Product;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
 import com.example.ecommercebackend.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "Product")
 @RequestMapping("/product")
 public class ProductController {
 
