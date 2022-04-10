@@ -6,6 +6,7 @@ import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
 import com.example.ecommercebackend.service.UserService;
 import com.lowagie.text.DocumentException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@Tag(name = "User")
 @RequestMapping("/user")
 public class UserController {
 
