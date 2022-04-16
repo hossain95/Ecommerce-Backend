@@ -3,7 +3,6 @@ package com.example.ecommercebackend.service;
 import com.example.ecommercebackend.model.*;
 import com.example.ecommercebackend.repository.PurchaseHistoryRepository;
 import com.example.ecommercebackend.repository.ShoppingCartRepository;
-import com.example.ecommercebackend.repository.UserRepository;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.status.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class CheckOutService {
     @Autowired
     private CartItemService cartItemService;
 
-    public ResponseEntity<CommonResponse> orderCheckOut(Long userId){
+    public CommonResponse orderCheckOut(Long userId){
 
         ShoppingCart shoppingCart = shoppingCartService.shoppingCartByCustomer(userId);
 
@@ -41,7 +40,7 @@ public class CheckOutService {
             purchaseHistory.setPrice(product.getPrice());
             purchaseHistory.setQuantity(cartItem.getQuantity());
             purchaseHistory.setDeliveryCharge(product.getDeliveryCharge());
-            purchaseHistory.setUser(shoppingCart.getUser());
+            purchaseHistory.setBuyer(shoppingCart.getBuyer());
 
             purchaseHistoryRepository.save(purchaseHistory);
             cartItemService.cartItemDeleteById(cartItem.getId());
@@ -49,6 +48,6 @@ public class CheckOutService {
 
         shoppingCartService.deleteShoppingCart(shoppingCart.getId());
 
-        return new ResponseEntity<>(new CommonResponse("check out successful", ResponseStatus.succeed), HttpStatus.OK);
+        return new CommonResponse("check out successful", HttpStatus.OK);
     }
 }

@@ -14,8 +14,8 @@ public class ShoppingCart {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_model_id")
-    private UserModel userModel;
+    @JoinColumn(name = "buyer_id")
+    private Buyer buyer;
 
     private double totalProductPrice = 0.0;
     private double totalDeliveryCharge = 0.0;
@@ -24,9 +24,6 @@ public class ShoppingCart {
     @OneToMany(mappedBy = "shoppingCart")
     private List<CartItem> cartItems;
 
-    public UserModel getUserModel() {
-        return userModel;
-    }
 
     public Long getId() {
         return id;
@@ -36,12 +33,12 @@ public class ShoppingCart {
         this.id = id;
     }
 
-    public UserModel getUser() {
-        return userModel;
+    public Buyer getBuyer() {
+        return buyer;
     }
 
-    public void setUser(UserModel userModel) {
-        this.userModel = userModel;
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
 
     public double getTotalProductPrice() {

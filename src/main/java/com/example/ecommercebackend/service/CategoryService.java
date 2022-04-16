@@ -3,9 +3,9 @@ package com.example.ecommercebackend.service;
 import com.example.ecommercebackend.dto.CategoryDto;
 import com.example.ecommercebackend.dto.dtoConverter.DtoConverter;
 import com.example.ecommercebackend.model.Category;
-import com.example.ecommercebackend.model.UserModel;
+import com.example.ecommercebackend.model.Seller;
 import com.example.ecommercebackend.repository.CategoryRepository;
-import com.example.ecommercebackend.repository.UserRepository;
+import com.example.ecommercebackend.repository.SellerRepository;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
 import com.example.ecommercebackend.response.status.ResponseStatus;
@@ -22,38 +22,38 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private SellerRepository sellerRepository;
 
     public GetRequestResponse<Category> listCategory(){
         return new GetRequestResponse<>(ResponseStatus.succeed, categoryRepository.findAll());
     }
 
-    public ResponseEntity<CommonResponse> categoryCreate(CategoryDto categoryDto){
-        Long userId = categoryDto.getUserId();
+    public CommonResponse categoryCreate(CategoryDto categoryDto){
+        String email = categoryDto.getSellerEmail();
         Category category = new DtoConverter().categoryDtoToCategory(categoryDto);
 
-        UserModel userModel = userRepository.findById(userId).get();
+        Seller seller = sellerRepository.findSellerByEmail(email);
 //        System.out.println("user status: "+ userModel.getUserStatus());
-        if (Objects.isNull(userModel)){
-            return new ResponseEntity<>(new CommonResponse("account does not exist", ResponseStatus.failed), HttpStatus.FORBIDDEN);
+        if (Objects.isNull(seller)){
+            return new CommonResponse("account does not exist", HttpStatus.BAD_REQUEST);
         }
-        if (userModel.getEnabled() == false){
-            return new ResponseEntity<>(new CommonResponse("your account does not activate yet!", ResponseStatus.failed), HttpStatus.FORBIDDEN);
+        if (seller.getEnabled() == false){
+            return new CommonResponse("your account does not activate yet!", HttpStatus.FORBIDDEN);
         }
-        if (userModel.getUserStatus().equals("buyer")){
-            return new ResponseEntity<>(new CommonResponse("buyer can not add category", ResponseStatus.failed), HttpStatus.FORBIDDEN);
-        }
+//        if (seller.getUserStatus().equals("buyer")){
+//            return new ResponseEntity<>(new CommonResponse("buyer can not add category", ResponseStatus.failed), HttpStatus.FORBIDDEN);
+//        }
 
         category.setCategoryName(category.getCategoryName().toLowerCase());
 
         Category cat = categoryRepository.findCategoryByCategoryName(category.getCategoryName());
         if (Objects.nonNull(cat)){
-            return new ResponseEntity<>(new CommonResponse(category.getCategoryName()+ " is already exist!", ResponseStatus.failed), HttpStatus.BAD_REQUEST);
+            return new CommonResponse(category.getCategoryName()+ " is already exist!", HttpStatus.BAD_REQUEST);
         }
 //        categoryRepository.save(category);
         System.out.println("Success : "+ category.getCategoryName());
         categoryRepository.save(category);
 
-        return new ResponseEntity<>(new CommonResponse("category is created", ResponseStatus.succeed), HttpStatus.CREATED);
+        return new CommonResponse("category is created", HttpStatus.CREATED);
     }
 }

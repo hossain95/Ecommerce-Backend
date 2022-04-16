@@ -29,14 +29,16 @@ public class DtoConverter {
         product.setName(productDto.getName());
         product.setPrice(productDto.getPrice());
         product.setDescription(productDto.getDescription());
-        product.setImage(productDto.getImageURL());
+
+        product.setImage(productDto.getImage());
         product.setDeliveryCharge(productDto.getDeliveryCharge());
         product.setCategory(category);
+        product.setQuantity(productDto.getQuantity());
 
         return product;
     }
 
-    public ShippingAddress shippingAddressDtoToShippingAddress(ShippingAddressDto shippingAddressDto, UserModel user){
+    public ShippingAddress shippingAddressDtoToShippingAddress(ShippingAddressDto shippingAddressDto, Buyer buyer){
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setName(shippingAddressDto.getName());
         shippingAddress.setPhone(shippingAddressDto.getPhone());
@@ -45,7 +47,7 @@ public class DtoConverter {
         shippingAddress.setDistrict(shippingAddressDto.getDistrict());
         shippingAddress.setThana(shippingAddressDto.getThana());
         shippingAddress.setPostOffice(shippingAddressDto.getPostOffice());
-        shippingAddress.setUserModel(user);
+        shippingAddress.setBuyer(buyer);
 
         return shippingAddress;
     }

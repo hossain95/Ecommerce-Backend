@@ -1,12 +1,16 @@
 package com.example.ecommercebackend.controller;
+import com.example.ecommercebackend.dto.BuyerInfo;
+import com.example.ecommercebackend.dto.SellerInfo;
+import com.example.ecommercebackend.model.Buyer;
 import com.example.ecommercebackend.model.PurchaseHistory;
-import com.example.ecommercebackend.model.UserModel;
+import com.example.ecommercebackend.model.Seller;
 import com.example.ecommercebackend.pdf.UserPurchaseHistoryPDFExporter;
+import com.example.ecommercebackend.repository.SellerRepository;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
-import com.example.ecommercebackend.service.UserService;
+import com.example.ecommercebackend.service.BuyerService;
+import com.example.ecommercebackend.service.SellerService;
 import com.lowagie.text.DocumentException;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,30 +23,36 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@Tag(name = "User")
+//@Tag(name = "User")
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private BuyerService buyerService;
 
-    @PostMapping("/registration")
-    public ResponseEntity<CommonResponse> userRegistration(@RequestBody UserModel user){
-        return userService.userRegistration(user);
+    @Autowired
+    private SellerService sellerService;
+
+
+
+    @PostMapping("/buyer/registration")
+    public CommonResponse buyerRegistration(@RequestBody Buyer user){
+        return buyerService.buyerRegistration(user);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<GetRequestResponse> userList(){
-        return userService.userList();
+    @GetMapping("/buyer/list")
+    public GetRequestResponse buyerList(){
+        return buyerService.buyerList();
     }
 
-    @GetMapping("/{userId}/purchase/history")
-    public ResponseEntity<GetRequestResponse> purchaseHistory(@PathVariable("userId") Long userId){
-        return userService.purchaseHistoryById(userId);
+    @GetMapping("/buyer/{buyerId}/purchase/history")
+    public GetRequestResponse purchaseHistory(@PathVariable("buyerId") Long buyerId){
+        System.out.println("Purchase History: "+ buyerId);
+        return buyerService.purchaseHistoryById(buyerId);
     }
 
-    @GetMapping("/{userId}/purchase/histroy/download")
-    public void exportToPDF(HttpServletResponse response, @PathVariable("userId") Long userId) throws DocumentException, IOException {
+    @GetMapping("/buyer/{buyerId}/purchase/histroy/download")
+    public void exportToPDF(HttpServletResponse response, @PathVariable("buyerId") Long userId) throws DocumentException, IOException {
         response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -51,10 +61,33 @@ public class UserController {
         String headerValue = "attachment; filename=purchase_history_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
 
-        List<PurchaseHistory> purchaseHistories = userService.purchaseHistoryDownload(userId);
+        List<PurchaseHistory> purchaseHistories = buyerService.purchaseHistoryDownload(userId);
 
         UserPurchaseHistoryPDFExporter exporter = new UserPurchaseHistoryPDFExporter(purchaseHistories);
         exporter.export(response);
 
+    }
+
+
+    @PostMapping("/seller/registration")
+    public CommonResponse sellerRegistration(@RequestBody Seller user){
+        return sellerService.sellerRegistration(user);
+    }
+
+    @GetMapping("/seller/list")
+    public ResponseEntity<GetRequestResponse> sellerList(){
+        return sellerService.sellList();
+    }
+
+    @GetMapping("/buyer/info/{token}")
+    public BuyerInfo getBuyer(@PathVariable("token") String token){
+
+        return buyerService.getBuyer(token);
+    }
+
+    @GetMapping("/seller/info/{token}")
+    public SellerInfo getSeller(@PathVariable("token") String token){
+
+        return sellerService.getSeller(token);
     }
 }

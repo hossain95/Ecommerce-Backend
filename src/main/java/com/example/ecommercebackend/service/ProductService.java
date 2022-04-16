@@ -4,10 +4,10 @@ import com.example.ecommercebackend.dto.ProductDto;
 import com.example.ecommercebackend.dto.dtoConverter.DtoConverter;
 import com.example.ecommercebackend.model.Category;
 import com.example.ecommercebackend.model.Product;
-import com.example.ecommercebackend.model.UserModel;
+import com.example.ecommercebackend.model.Seller;
 import com.example.ecommercebackend.repository.CategoryRepository;
 import com.example.ecommercebackend.repository.ProductRepository;
-import com.example.ecommercebackend.repository.UserRepository;
+import com.example.ecommercebackend.repository.SellerRepository;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
 import com.example.ecommercebackend.response.status.ResponseStatus;
@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,7 +30,7 @@ public class ProductService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private SellerRepository sellerRepository;
 
 
     public GetRequestResponse<Product> productList(){
@@ -38,25 +39,39 @@ public class ProductService {
         return new GetRequestResponse<>(ResponseStatus.succeed, products);
     }
 
-    public ResponseEntity<CommonResponse> productCreate(ProductDto productDto){
-        Optional<Category> category = categoryRepository.findById(productDto.getCategoryId());
+    public CommonResponse productCreate(ProductDto productDto){
+        productDto.setCategoryName(productDto.getCategoryName().toLowerCase());
+        Category category = categoryRepository.findCategoryByCategoryName(productDto.getCategoryName());
 
-        if(category.isEmpty()){
-            return new ResponseEntity<>(new CommonResponse("category does not found!", ResponseStatus.failed), HttpStatus.BAD_REQUEST);
+        if(Objects.isNull(category)){
+            return new CommonResponse("category does not found!", HttpStatus.BAD_REQUEST);
         }
-        UserModel userModel = userRepository.findById(productDto.getUserId()).get();
-        if(userModel.getUserStatus().equals("buyer")){
-            return new ResponseEntity<>(new CommonResponse("buyer does not add product", ResponseStatus.failed), HttpStatus.FORBIDDEN);
+        Seller seller = sellerRepository.findSellerByEmail(productDto.getSellerEmail());
+        if(Objects.isNull(seller)){
+            return new CommonResponse("seller does not exist", HttpStatus.BAD_REQUEST);
+        }
+        productDto.setName(productDto.getName().toLowerCase());
+        Product pro = productRepository.findByName(productDto.getName());
+
+        if (Objects.nonNull(pro)){
+            return new CommonResponse(productDto.getName()+ " is already exist!", HttpStatus.BAD_REQUEST);
         }
 
-        Product product = new DtoConverter().productDtoToProduct(productDto, category.get());
+        Product product = new DtoConverter().productDtoToProduct(productDto, category);
 
         try{
             productRepository.save(product);
-            return new ResponseEntity<>(new CommonResponse("product is created", ResponseStatus.succeed), HttpStatus.CREATED);
+            return new CommonResponse("product is created", HttpStatus.CREATED);
         }
         catch (Exception e){
-            return new ResponseEntity<>(new CommonResponse("product does not created", ResponseStatus.failed), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new CommonResponse("product does not created", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public Product productDetails(Long productId){
+
+        Product product = productRepository.findById(productId).get();
+
+        return product;
     }
 }

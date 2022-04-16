@@ -5,13 +5,12 @@ import com.example.ecommercebackend.model.Product;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
 import com.example.ecommercebackend.service.ProductService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "Product")
+//@Tag(name = "Product")
 @RequestMapping("/product")
 public class ProductController {
 
@@ -24,7 +23,12 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CommonResponse> productCreate(@RequestBody ProductDto productDto){
+    public CommonResponse productCreate(@RequestBody ProductDto productDto){
         return productService.productCreate(productDto);
+    }
+
+    @GetMapping("/{productId}/details")
+    public Product productDetails(@PathVariable("productId") Long productId){
+        return productService.productDetails(productId);
     }
 }

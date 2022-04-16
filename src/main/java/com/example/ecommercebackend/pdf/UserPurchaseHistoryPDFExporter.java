@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.example.ecommercebackend.model.PurchaseHistory;
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 
 
 public class UserPurchaseHistoryPDFExporter {

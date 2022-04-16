@@ -4,13 +4,12 @@ import com.example.ecommercebackend.model.Category;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
 import com.example.ecommercebackend.service.CategoryService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "Category")
+//@Tag(name = "Category")
 @RequestMapping("/category")
 public class CategoryController {
 
@@ -24,7 +23,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CommonResponse> categoryCreate(@RequestBody CategoryDto categoryDto){
+    public CommonResponse categoryCreate(@RequestBody CategoryDto categoryDto){
         return categoryService.categoryCreate(categoryDto);
     }
 }
