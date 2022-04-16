@@ -5,11 +5,14 @@ import com.example.ecommercebackend.email.SendEmailToActivate;
 import com.example.ecommercebackend.model.Buyer;
 import com.example.ecommercebackend.model.PurchaseHistory;
 import com.example.ecommercebackend.model.Seller;
+import com.example.ecommercebackend.model.ShippingAddress;
 import com.example.ecommercebackend.repository.BuyerRepository;
 import com.example.ecommercebackend.repository.PurchaseHistoryRepository;
 import com.example.ecommercebackend.repository.SellerRepository;
+import com.example.ecommercebackend.repository.ShippingAddressRepository;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
+import com.example.ecommercebackend.response.status.GetResponseSingle;
 import com.example.ecommercebackend.response.status.ResponseStatus;
 import com.example.ecommercebackend.security.PasswordEncode;
 import com.example.ecommercebackend.security.PasswordValidation;
@@ -28,6 +31,8 @@ public class BuyerService {
     @Autowired
     private BuyerRepository buyerRepository;
 
+    @Autowired
+    private ShippingAddressRepository shippingAddressRepository;
     @Autowired
     private SellerRepository sellerRepository;
 
@@ -94,11 +99,56 @@ public class BuyerService {
         Buyer buyer = buyerRepository.findByToken(token);
 
         BuyerInfo buyerInfo = new BuyerInfo();
+        buyerInfo.setName(buyer.getName());
         buyerInfo.setContact(buyer.getContact());
         buyerInfo.setEmail(buyer.getEmail());
         buyerInfo.setContact(buyer.getContact());
         buyerInfo.setId(buyer.getId());
 
         return buyerInfo;
+    }
+
+    public CommonResponse buyerInfoUpdate(BuyerInfo buyerInfo){
+        Buyer buyer = buyerRepository.findById(buyerInfo.getId()).get();
+
+        buyer.setName(buyerInfo.getName());
+        buyer.setContact(buyerInfo.getContact());
+        buyer.setEmail(buyerInfo.getEmail());
+
+        buyerRepository.save(buyer);
+        return new CommonResponse("updated", HttpStatus.CREATED);
+    }
+
+    public GetResponseSingle <ShippingAddress> shippingAddress(Long buyerId){
+        Buyer buyer = buyerRepository.findById(buyerId).get();
+
+
+        ShippingAddress shippingAddress = shippingAddressRepository.findByBuyer(buyer);
+        if (Objects.isNull(shippingAddress)){
+            return new GetResponseSingle<>(HttpStatus.NOT_FOUND, null);
+        }
+
+        return new GetResponseSingle<>(HttpStatus.OK, shippingAddress);
+    }
+
+    public CommonResponse shippingAddressUpdate(ShippingAddress shippingAddress, Long buyerId){
+        Buyer buyer = buyerRepository.findById(buyerId).get();
+
+        ShippingAddress address = shippingAddressRepository.findByBuyer(buyer);
+
+        if (Objects.isNull(address)){
+            return new CommonResponse("shipping address not found", HttpStatus.BAD_REQUEST);
+        }
+        address.setName(shippingAddress.getName());
+        address.setPhone(shippingAddress.getPhone());
+        address.setEmail(shippingAddress.getEmail());
+        address.setDivision(shippingAddress.getDivision());
+        address.setDivision(shippingAddress.getDistrict());
+        address.setThana(shippingAddress.getThana());
+        address.setPostOffice(shippingAddress.getPostOffice());
+
+        shippingAddressRepository.save(address);
+
+        return new CommonResponse("shipping address updated", HttpStatus.OK);
     }
 }

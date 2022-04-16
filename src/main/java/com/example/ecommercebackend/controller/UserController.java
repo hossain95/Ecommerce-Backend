@@ -4,10 +4,12 @@ import com.example.ecommercebackend.dto.SellerInfo;
 import com.example.ecommercebackend.model.Buyer;
 import com.example.ecommercebackend.model.PurchaseHistory;
 import com.example.ecommercebackend.model.Seller;
+import com.example.ecommercebackend.model.ShippingAddress;
 import com.example.ecommercebackend.pdf.UserPurchaseHistoryPDFExporter;
 import com.example.ecommercebackend.repository.SellerRepository;
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.response.GetRequestResponse;
+import com.example.ecommercebackend.response.status.GetResponseSingle;
 import com.example.ecommercebackend.service.BuyerService;
 import com.example.ecommercebackend.service.SellerService;
 import com.lowagie.text.DocumentException;
@@ -74,6 +76,11 @@ public class UserController {
         return sellerService.sellerRegistration(user);
     }
 
+    @PostMapping("/buyer/update")
+    public CommonResponse buyerInfoUpdate(@RequestBody BuyerInfo buyerInfo){
+        return buyerService.buyerInfoUpdate(buyerInfo);
+    }
+
     @GetMapping("/seller/list")
     public ResponseEntity<GetRequestResponse> sellerList(){
         return sellerService.sellList();
@@ -89,5 +96,17 @@ public class UserController {
     public SellerInfo getSeller(@PathVariable("token") String token){
 
         return sellerService.getSeller(token);
+    }
+
+    @GetMapping("/buyer/{buyerId}/shipping-address")
+    public GetResponseSingle<ShippingAddress> shippingAddress(@PathVariable("buyerId") Long buyerId){
+
+        return buyerService.shippingAddress(buyerId);
+    }
+
+    @PostMapping("/buyer/{buyerId}/shipping-address/update")
+    public CommonResponse shippingAddressUpdate(@RequestBody ShippingAddress shippingAddress, @PathVariable("buyerId") Long buyerId){
+
+        return buyerService.shippingAddressUpdate(shippingAddress, buyerId);
     }
 }
