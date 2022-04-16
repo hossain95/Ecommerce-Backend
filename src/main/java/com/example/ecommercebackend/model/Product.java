@@ -12,10 +12,12 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(name = "iamge", length = 1000000)
     private String image;
     private double price;
     private String description;
     private double deliveryCharge;
+    private Long quantity;
 
     @JsonIgnore
     @ManyToOne
@@ -88,5 +90,13 @@ public class Product {
 
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
     }
 }

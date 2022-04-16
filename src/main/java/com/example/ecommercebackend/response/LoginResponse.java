@@ -2,11 +2,11 @@ package com.example.ecommercebackend.response;
 
 public class LoginResponse {
     private String token;
-    private Enum status;
+    private String message;
 
-    public LoginResponse(String token, Enum status) {
+    public LoginResponse(String token, String message) {
         this.token = token;
-        this.status = status;
+        this.message = message;
     }
 
     public String getToken() {
@@ -17,11 +17,11 @@ public class LoginResponse {
         this.token = token;
     }
 
-    public Enum getStatus() {
-        return status;
+    public String getMessage() {
+        return message;
     }
 
-    public void setStatus(Enum status) {
-        this.status = status;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

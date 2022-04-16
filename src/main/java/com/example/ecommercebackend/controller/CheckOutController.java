@@ -2,7 +2,6 @@ package com.example.ecommercebackend.controller;
 
 import com.example.ecommercebackend.response.CommonResponse;
 import com.example.ecommercebackend.service.CheckOutService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "Check Out")
+//@Tag(name = "Check Out")
 public class CheckOutController {
     @Autowired
     private CheckOutService checkOutService;
 
     @PostMapping("/user/{userId}/checkout")
-    public ResponseEntity<CommonResponse> checkOut(@PathVariable("userId") Long userId){
+    public CommonResponse checkOut(@PathVariable("userId") Long userId){
         return checkOutService.orderCheckOut(userId);
     }
 }

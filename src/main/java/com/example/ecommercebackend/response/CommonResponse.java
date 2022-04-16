@@ -1,10 +1,12 @@
 package com.example.ecommercebackend.response;
 
+import org.springframework.http.HttpStatus;
+
 public class CommonResponse {
     private String message;
-    private Enum status;
+    private HttpStatus status;
 
-    public CommonResponse(String message, Enum status) {
+    public CommonResponse(String message, HttpStatus status) {
         this.message = message;
         this.status = status;
     }
@@ -17,11 +19,11 @@ public class CommonResponse {
         this.message = message;
     }
 
-    public Enum getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Enum status) {
+    public void setStatus(HttpStatus status) {
         this.status = status;
     }
 }

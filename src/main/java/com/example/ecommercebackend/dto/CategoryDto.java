@@ -2,7 +2,7 @@ package com.example.ecommercebackend.dto;
 
 public class CategoryDto {
     private String categoryName;
-    private Long userId;
+    private String sellerEmail;
 
     public String getCategoryName() {
         return categoryName;
@@ -12,11 +12,11 @@ public class CategoryDto {
         this.categoryName = categoryName;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getSellerEmail() {
+        return sellerEmail;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setSellerEmail(String sellerEmail) {
+        this.sellerEmail = sellerEmail;
     }
 }

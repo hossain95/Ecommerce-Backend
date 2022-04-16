@@ -20,7 +20,7 @@ public class ShippingAddress {
 
     @JsonIgnore
     @OneToOne
-    private UserModel userModel;
+    private Buyer buyer;
 
     public Long getId() {
         return id;
@@ -86,11 +86,11 @@ public class ShippingAddress {
         this.postOffice = postOffice;
     }
 
-    public UserModel getUserModel() {
-        return userModel;
+    public Buyer getBuyer() {
+        return buyer;
     }
 
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
 }

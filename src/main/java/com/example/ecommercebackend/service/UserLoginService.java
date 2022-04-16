@@ -1,10 +1,14 @@
 package com.example.ecommercebackend.service;
 
 import com.example.ecommercebackend.dto.UserDto;
-import com.example.ecommercebackend.model.UserModel;
-import com.example.ecommercebackend.repository.UserRepository;
+import com.example.ecommercebackend.model.Buyer;
+import com.example.ecommercebackend.model.Seller;
+import com.example.ecommercebackend.repository.BuyerRepository;
+import com.example.ecommercebackend.repository.SellerRepository;
 import com.example.ecommercebackend.response.CommonResponse;
+import com.example.ecommercebackend.response.LoginResponse;
 import com.example.ecommercebackend.response.status.ResponseStatus;
+import com.example.ecommercebackend.security.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,39 +21,54 @@ import java.util.Objects;
 public class UserLoginService {
 
     @Autowired
-    private UserRepository userRepository;
-//    @Autowired
-//    private SellerRepository sellerRepository;
+    private BuyerService buyerService;
+
+    @Autowired
+    private SellerService sellerService;
+
+    @Autowired
+    private BuyerRepository buyerRepository;
+
+    @Autowired
+    private SellerRepository sellerRepository;
 
 
-    public ResponseEntity<CommonResponse> userLogin(UserDto userDto){
-        UserModel userModel = userRepository.findByEmail(userDto.getUserName());
-//        Seller seller = sellerRepository.findSellerByEmail(userDto.getUserName());
+    public LoginResponse userLogin(UserDto userDto){
+        Buyer buyer = buyerRepository.findBuyerByEmail(userDto.getUserName());
+        Seller seller = sellerRepository.findSellerByEmail(userDto.getUserName());
 
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
-        if (Objects.isNull(userModel)){
-            return new ResponseEntity<>(new CommonResponse("user does not exist", ResponseStatus.failed), HttpStatus.NOT_FOUND);
-        }
-        if (Objects.nonNull(userModel)){
-            String password = userDto.getPassword();
-            if (!bcrypt.matches(password, userModel.getPassword())){
-                return new ResponseEntity<>(new CommonResponse("wrong password", ResponseStatus.failed), HttpStatus.NOT_ACCEPTABLE);
-            }
-            if (!userModel.getEnabled()){
-                return new ResponseEntity<>(new CommonResponse("your account not activated yet", ResponseStatus.failed), HttpStatus.NOT_ACCEPTABLE);
-            }
-        }
-//        if (Objects.nonNull(seller)){
-//            String password = userDto.getPassword();
-//            if (!bcrypt.matches(password, seller.getPassword())){
-//                return new ResponseEntity<>(new CommonResponse("wrong password", ResponseStatus.failed), HttpStatus.NOT_ACCEPTABLE);
-//            }
-//            if (!seller.getEnabled()){
-//                return new ResponseEntity<>(new CommonResponse("your account not activated yet", ResponseStatus.failed), HttpStatus.NOT_ACCEPTABLE);
-//            }
-//        }
+        String token = new Token().getToken();
 
-        return new ResponseEntity<>(new CommonResponse("login successful", ResponseStatus.succeed), HttpStatus.OK);
+        if (Objects.isNull(buyer) && Objects.isNull(seller)){
+            return new LoginResponse("", "user does not exist");
+        }
+        if (Objects.nonNull(buyer)){
+            String password = userDto.getPassword();
+            if (!bcrypt.matches(password, buyer.getPassword())){
+                return new LoginResponse("", "wrong password");
+            }
+            if (!buyer.getEnabled()){
+                return new LoginResponse("", "your account not activated yet");
+            }
+
+            buyerService.saveToken(buyer, "1"+token);
+
+            return new LoginResponse("1"+token, "login successful");
+        }
+
+
+        if (Objects.nonNull(seller)){
+            String password = userDto.getPassword();
+            if (!bcrypt.matches(password, seller.getPassword())){
+                return new LoginResponse("", "wrong password");
+            }
+            if (!seller.getEnabled()){
+                return new LoginResponse("", "your account not activated yet");
+            }
+        }
+        sellerService.saveToken(seller, "2"+token);
+        return new LoginResponse("2"+token, "login successful");
     }
 }

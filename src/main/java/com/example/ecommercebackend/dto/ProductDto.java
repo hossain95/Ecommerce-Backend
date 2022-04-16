@@ -1,14 +1,19 @@
 package com.example.ecommercebackend.dto;
 
 
+import javax.persistence.Column;
+
 public class ProductDto {
     private String name;
-    private String imageURL;
+    @Column(name = "image", length = 1000000)
+    private String image;
     private double price;
     private String description;
-    private Long categoryId;
+    private String categoryName;
     private Double deliveryCharge;
-    private Long userId;
+    private String sellerEmail;
+
+    private Long quantity;
 
     public String getName() {
         return name;
@@ -18,12 +23,12 @@ public class ProductDto {
         this.name = name;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public double getPrice() {
@@ -42,12 +47,12 @@ public class ProductDto {
         this.description = description;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public Double getDeliveryCharge() {
@@ -58,11 +63,19 @@ public class ProductDto {
         this.deliveryCharge = deliveryCharge;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getSellerEmail() {
+        return sellerEmail;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setSellerEmail(String sellerEmail) {
+        this.sellerEmail = sellerEmail;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
     }
 }

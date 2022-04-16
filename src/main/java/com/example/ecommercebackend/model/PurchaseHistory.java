@@ -19,8 +19,8 @@ public class PurchaseHistory {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_model_id")
-    private UserModel  user;
+    @JoinColumn(name = "user_id")
+    private Buyer  buyer;
 
     public Long getId() {
         return id;
@@ -70,11 +70,11 @@ public class PurchaseHistory {
         this.quantity = quantity;
     }
 
-    public UserModel getUser() {
-        return user;
+    public Buyer getBuyer() {
+        return buyer;
     }
 
-    public void setUser(UserModel user) {
-        this.user = user;
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
 }
